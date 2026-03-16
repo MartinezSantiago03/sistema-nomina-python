@@ -1,18 +1,21 @@
 import tkinter as tk
+from tkinter import ttk
 
-def mostrar_reporte(emp,total):
+
+def mostrar_reporte(emp, total):
 
     ventana = tk.Toplevel()
     ventana.title("Reporte de Nómina")
-    ventana.geometry("350x300")
+    ventana.geometry("350x320")
 
-    titulo = tk.Label(
-        ventana,
+    frame = ttk.Frame(ventana, padding=20)
+    frame.pack(expand=True)
+
+    ttk.Label(
+        frame,
         text="Reporte de Pago",
-        font=("Arial",14,"bold")
-    )
-
-    titulo.pack(pady=10)
+        font=("Segoe UI", 13, "bold")
+    ).pack(pady=10)
 
     datos = [
         f"Identificación: {emp.identificacion}",
@@ -20,10 +23,10 @@ def mostrar_reporte(emp,total):
         f"Género: {emp.genero}",
         f"Cargo: {emp.cargo}",
         f"Días trabajados: {emp.dias}",
-        f"Valor día: {emp.valor_dia}",
+        f"Valor día: ${emp.valor_dia}",
         f"Fecha: {emp.fecha}",
-        f"Total a pagar: {total}"
+        f"TOTAL A PAGAR: ${total}"
     ]
 
-    for d in datos:
-        tk.Label(ventana,text=d).pack()
+    for dato in datos:
+        ttk.Label(frame, text=dato).pack(anchor="w", pady=2)
