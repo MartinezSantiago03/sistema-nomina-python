@@ -14,8 +14,11 @@ def abrir_registro():
     frame = ttk.Frame(ventana, padding=20)
     frame.pack(expand=True)
 
-    ttk.Label(frame, text="Registro de Empleado",
-              font=("Segoe UI", 13, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
+    ttk.Label(
+        frame,
+        text="Registro de Empleado",
+        font=("Segoe UI", 13, "bold")
+    ).grid(row=0, column=0, columnspan=2, pady=10)
 
     # Campos
 
@@ -31,11 +34,17 @@ def abrir_registro():
 
     genero = tk.StringVar()
 
-    ttk.Radiobutton(frame, text="Masculino",
-                    variable=genero, value="Masculino").grid(row=3, column=1)
+    ttk.Radiobutton(
+        frame, text="Masculino",
+        variable=genero,
+        value="Masculino"
+    ).grid(row=3, column=1)
 
-    ttk.Radiobutton(frame, text="Femenino",
-                    variable=genero, value="Femenino").grid(row=3, column=2)
+    ttk.Radiobutton(
+        frame, text="Femenino",
+        variable=genero,
+        value="Femenino"
+    ).grid(row=3, column=2)
 
     ttk.Label(frame, text="Cargo").grid(row=4, column=0, sticky="w")
 
@@ -51,6 +60,8 @@ def abrir_registro():
 
     dias = ttk.Entry(frame)
     dias.grid(row=6, column=1)
+
+    gestion = None
 
     # Mostrar valor según cargo
 
@@ -94,14 +105,16 @@ def abrir_registro():
 
         return True
 
-    # Calcular nómina
+    # Guardar registro
 
-    def calcular():
+    def guardar_registro():
+
+        nonlocal gestion
 
         if not validar_campos():
             return
 
-        empleado = GestionEmpleados(
+        gestion = GestionEmpleados(
             entry_id.get(),
             entry_nombre.get(),
             genero.get(),
@@ -110,30 +123,57 @@ def abrir_registro():
             float(valor_dia.get())
         )
 
-        total = empleado.calcular_nomina()
+        print("Empleado guardado:", gestion.__dict__)
 
-        mostrar_reporte(empleado, total)
+        messagebox.showinfo(
+            "Registro guardado",
+            "El empleado fue registrado correctamente"
+        )
 
-    # Botones
+    # Calcular nómina
 
-    ttk.Button(
-        frame,
-        text="Calcular Nómina",
-        command=calcular
-    ).grid(row=7, column=0, pady=20)
+    def calcular():
+
+        if gestion is None:
+            messagebox.showwarning(
+                "Advertencia",
+                "Primero debe guardar el registro"
+            )
+            return
+
+        total = gestion.calcular_nomina()
+
+        mostrar_reporte(gestion, total)
+
+    # Salir
 
     def salir():
         confirmacion = messagebox.askyesno(
             "Salir",
             "¿Está seguro que desea salir?"
         )
+
         if confirmacion:
             ventana.destroy()
+
+    # Botones
+
+    ttk.Button(
+        frame,
+        text="Guardar Registro",
+        command=guardar_registro
+    ).grid(row=7, column=0, pady=20)
+
+    ttk.Button(
+        frame,
+        text="Calcular Nómina",
+        command=calcular
+    ).grid(row=7, column=1, pady=20)
 
     ttk.Button(
         frame,
         text="Salir",
         command=salir
-    ).grid(row=7, column=1)
+    ).grid(row=8, column=0, columnspan=2)
 
     ventana.mainloop()
